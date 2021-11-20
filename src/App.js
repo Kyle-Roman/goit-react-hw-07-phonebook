@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState} from 'react';
+import Form from './Components/Form/Form';
+import ContactsList from './Components/ContactList/ContactsList';
+import Filter from './Components/FIlter/Filter';
+import { useGetContactsQuery, useGetFilteredContactsQuery, useDeleteContactMutation} from './Components/api/api';
+import s from './App.module.css';
 
-function App() {
+export default function App() {
+  const [contactName, setContactName] = useState('');
+  const { data, error, isFetching } = useGetContactsQuery();
+  const [deleteContact] = useDeleteContactMutation();
+  const { filteredData } = useGetFilteredContactsQuery(contactName, {
+    skip: contactName === '',
+  });
+
+  const onFilterChange = (e) => {
+    setContactName(e.currentTarget.value);
+  };
+
+  console.log(data);
+  console.log(filteredData);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
-
-export default App;
+    <div className={s.app}>
+      <h1 className={s.title}>Phonebook</h1>
+      <Form />
+      <h2 className={s.title}>Contacts</h2>
+      <Filter onChange={onFilterChange} value={contactName} />
+      {error ? (
+        <>Oh no, there was an error</>
+      ) : isFetching ? (
+        <>Loading...</>
+      ) : data && (contactName === '')? (
+          <ContactsList contacts={data} onDelete={deleteContact}/>
+      ) : filteredData && (contactName !== '')? (
+          <ContactsList contacts={filteredData} onDelete={deleteContact}/> 
+      ) : null}
+    </div>);
+};
+   
