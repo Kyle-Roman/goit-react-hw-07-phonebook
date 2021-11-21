@@ -9,7 +9,7 @@ export default function App() {
   const [contactName, setContactName] = useState('');
   const { data, error, isFetching } = useGetContactsQuery();
   const [deleteContact] = useDeleteContactMutation();
-  const { filteredData } = useGetFilteredContactsQuery(contactName, {
+  const { data: filteredData } = useGetFilteredContactsQuery(contactName, {
     skip: contactName === '',
   });
 
