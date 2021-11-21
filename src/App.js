@@ -17,8 +17,6 @@ export default function App() {
     setContactName(e.currentTarget.value);
   };
 
-  console.log(data);
-  console.log(filteredData);
   return (
     <div className={s.app}>
       <h1 className={s.title}>Phonebook</h1>
